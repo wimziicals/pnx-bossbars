@@ -5,17 +5,8 @@ import org.mistvale.bossbars.commands.BossBar;
 import org.powernukkitx.plugin.PluginBase;
 import org.powernukkitx.plugin.annotation.PluginMeta;
 
-@PluginMeta(
-        name = "BossBars",
-        version = "1.0.0",
-        authors = {
-                "Wimziicals"
-        },
-        api = {
-                "3.0.5"
-        },
-        website = "https://github.com/Wimziicals/pnx-bossbars"
-)
+@PluginMeta(name = "BossBars", version = "1.0.0", authors = { "Wimziicals" }, api = {
+        "3.0.5" }, website = "https://github.com/Wimziicals/pnx-bossbars")
 public class BossBars extends PluginBase {
 
     private static BossBars INSTANCE;

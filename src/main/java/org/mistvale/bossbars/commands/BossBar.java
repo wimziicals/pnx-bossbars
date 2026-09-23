@@ -47,8 +47,8 @@ import java.util.stream.Collectors;
 
 public class BossBar extends Command implements Listener {
 
-    private static final String[] COLORS = {"pink", "blue", "red", "green", "yellow", "purple", "white"};
-    private static final String[] STYLES = {"progress", "notched_6", "notched_10", "notched_12", "notched_20"};
+    private static final String[] COLORS = { "pink", "blue", "red", "green", "yellow", "purple", "white" };
+    private static final String[] STYLES = { "progress", "notched_6", "notched_10", "notched_12", "notched_20" };
 
     private final PluginBase plugin;
     private final File saveFile;
@@ -66,34 +66,38 @@ public class BossBar extends Command implements Listener {
         this.setPermission("mistvale.command.bossbar");
 
         commandParameters.clear();
-        commandParameters.put("add", new CommandParameter[]{
-                CommandParameter.newEnum("add", new String[]{"add"}),
+        commandParameters.put("add", new CommandParameter[] {
+                CommandParameter.newEnum("add", new String[] { "add" }),
                 CommandParameter.newType("id", CommandParamType.ID),
                 CommandParameter.newType("name", CommandParamType.MESSAGE)
         });
 
-        commandParameters.put("get", new CommandParameter[]{
-                CommandParameter.newEnum("get", new String[]{"get"}),
+        commandParameters.put("get", new CommandParameter[] {
+                CommandParameter.newEnum("get", new String[] { "get" }),
                 CommandParameter.newEnum("id", barIds),
-                CommandParameter.newEnum("property", new String[]{"max", "players", "value", "visible"})
+                CommandParameter.newEnum("property", new String[] { "max", "players", "value", "visible" })
         });
 
-        commandParameters.put("list", new CommandParameter[]{
-                CommandParameter.newEnum("list", new String[]{"list"})
+        commandParameters.put("list", new CommandParameter[] {
+                CommandParameter.newEnum("list", new String[] { "list" })
         });
 
-        commandParameters.put("remove", new CommandParameter[]{
-                CommandParameter.newEnum("remove", new String[]{"remove"}),
+        commandParameters.put("remove", new CommandParameter[] {
+                CommandParameter.newEnum("remove", new String[] { "remove" }),
                 CommandParameter.newEnum("id", barIds)
         });
 
         commandParameters.put("set-color", setOverload("color", CommandParameter.newEnum("color", COLORS)));
         commandParameters.put("set-max", setOverload("max", CommandParameter.newType("max", CommandParamType.INT)));
-        commandParameters.put("set-name", setOverload("name", CommandParameter.newType("name", CommandParamType.MESSAGE)));
-        commandParameters.put("set-players", setOverload("players", CommandParameter.newType("targets", true, CommandParamType.SELECTION)));
+        commandParameters.put("set-name",
+                setOverload("name", CommandParameter.newType("name", CommandParamType.MESSAGE)));
+        commandParameters.put("set-players",
+                setOverload("players", CommandParameter.newType("targets", true, CommandParamType.SELECTION)));
         commandParameters.put("set-style", setOverload("style", CommandParameter.newEnum("style", STYLES)));
-        commandParameters.put("set-value", setOverload("value", CommandParameter.newType("value", CommandParamType.INT)));
-        commandParameters.put("set-visible", setOverload("visible", CommandParameter.newEnum("visible", CommandEnum.ENUM_BOOLEAN)));
+        commandParameters.put("set-value",
+                setOverload("value", CommandParameter.newType("value", CommandParamType.INT)));
+        commandParameters.put("set-visible",
+                setOverload("visible", CommandParameter.newEnum("visible", CommandEnum.ENUM_BOOLEAN)));
 
         this.enableParamTree();
 
@@ -103,16 +107,17 @@ public class BossBar extends Command implements Listener {
     }
 
     private CommandParameter[] setOverload(String property, CommandParameter value) {
-        return new CommandParameter[]{
-                CommandParameter.newEnum("set", new String[]{"set"}),
+        return new CommandParameter[] {
+                CommandParameter.newEnum("set", new String[] { "set" }),
                 CommandParameter.newEnum("id", barIds),
-                CommandParameter.newEnum(property, new String[]{property}),
+                CommandParameter.newEnum(property, new String[] { property }),
                 value
         };
     }
 
     @Override
-    public int execute(CommandSender sender, String commandLabel, Map.Entry<String, ParamList> result, CommandLogger log) {
+    public int execute(CommandSender sender, String commandLabel, Map.Entry<String, ParamList> result,
+            CommandLogger log) {
         ParamList list = result.getValue();
         String overload = result.getKey();
 
@@ -169,21 +174,26 @@ public class BossBar extends Command implements Listener {
                 String property = list.getResult(2);
                 switch (property) {
                     case "max" -> {
-                        log.addSuccess("§fCustom bossbar " + bar.display(sender) + " has a maximum of " + bar.max).output();
+                        log.addSuccess("§fCustom bossbar " + bar.display(sender) + " has a maximum of " + bar.max)
+                                .output();
                         return bar.max;
                     }
                     case "value" -> {
-                        log.addSuccess("§fCustom bossbar " + bar.display(sender) + " has a value of " + bar.value).output();
+                        log.addSuccess("§fCustom bossbar " + bar.display(sender) + " has a value of " + bar.value)
+                                .output();
                         return bar.value;
                     }
                     case "visible" -> {
-                        log.addSuccess("§fCustom bossbar " + bar.display(sender) + " is currently " + (bar.visible ? "shown" : "hidden")).output();
+                        log.addSuccess("§fCustom bossbar " + bar.display(sender) + " is currently "
+                                + (bar.visible ? "shown" : "hidden")).output();
                         return bar.visible ? 1 : 0;
                     }
                     default -> {
                         List<String> online = onlinePlayers(bar).stream().map(Player::getName).toList();
                         if (online.isEmpty()) {
-                            log.addSuccess("§fCustom bossbar " + bar.display(sender) + " has no players currently online").output();
+                            log.addSuccess(
+                                    "§fCustom bossbar " + bar.display(sender) + " has no players currently online")
+                                    .output();
                         } else {
                             log.addSuccess("§fCustom bossbar " + bar.display(sender) + " has " + online.size()
                                     + " player(s) currently online: " + String.join(", ", online)).output();
@@ -249,7 +259,9 @@ public class BossBar extends Command implements Listener {
                     }
                 }
                 if (next.equals(bar.players)) {
-                    log.addError("Nothing changed. Those players are already on the bossbar with nobody to add or remove").output();
+                    log.addError(
+                            "Nothing changed. Those players are already on the bossbar with nobody to add or remove")
+                            .output();
                     return 0;
                 }
                 hideAll(bar);
@@ -292,7 +304,8 @@ public class BossBar extends Command implements Listener {
             case "visible" -> {
                 boolean visible = Boolean.parseBoolean(String.valueOf((Object) list.getResult(3)));
                 if (visible == bar.visible) {
-                    log.addError("Nothing changed. The bossbar is already " + (visible ? "visible" : "hidden")).output();
+                    log.addError("Nothing changed. The bossbar is already " + (visible ? "visible" : "hidden"))
+                            .output();
                     return 0;
                 }
                 if (visible) {
@@ -303,16 +316,20 @@ public class BossBar extends Command implements Listener {
                     bar.visible = false;
                 }
                 save();
-                log.addSuccess("§fCustom bossbar " + bar.display(sender) + " is now " + (visible ? "visible" : "hidden")).output();
+                log.addSuccess(
+                        "§fCustom bossbar " + bar.display(sender) + " is now " + (visible ? "visible" : "hidden"))
+                        .output();
             }
         }
         return 1;
     }
 
     private void show(Bar bar, Player player) {
-        if (!bar.visible || !player.isOnline()) return;
+        if (!bar.visible || !player.isOnline())
+            return;
         Map<UUID, Long> perPlayer = shown.computeIfAbsent(bar.id, k -> new HashMap<>());
-        if (perPlayer.containsKey(player.getUniqueId())) return;
+        if (perPlayer.containsKey(player.getUniqueId()))
+            return;
 
         DummyBossBar dummy = new DummyBossBar.Builder(player)
                 .text(bar.label(player))
@@ -326,7 +343,8 @@ public class BossBar extends Command implements Listener {
 
     private void hide(Bar bar, Player player) {
         Map<UUID, Long> perPlayer = shown.get(bar.id);
-        if (perPlayer == null) return;
+        if (perPlayer == null)
+            return;
         Long dummyId = perPlayer.remove(player.getUniqueId());
         if (dummyId != null && player.isOnline()) {
             player.removeBossBar(dummyId);
@@ -344,32 +362,43 @@ public class BossBar extends Command implements Listener {
     private void refresh(Bar bar) {
         save();
         Map<UUID, Long> perPlayer = shown.get(bar.id);
-        if (perPlayer == null) return;
+        if (perPlayer == null)
+            return;
         for (Player player : onlinePlayers(bar)) {
             Long dummyId = perPlayer.get(player.getUniqueId());
-            if (dummyId == null) continue;
+            if (dummyId == null)
+                continue;
             DummyBossBar dummy = player.getDummyBossBar(dummyId);
-            if (dummy == null) continue;
+            if (dummy == null)
+                continue;
             String rendered = bar.label(player);
-            if (!dummy.getText().equals(rendered)) dummy.setText(rendered);
-            if (dummy.getLength() != bar.percent()) dummy.setLength(bar.percent());
-            if (dummy.getColor() != bar.bossBarColor()) dummy.setColor(bar.bossBarColor());
+            if (!dummy.getText().equals(rendered))
+                dummy.setText(rendered);
+            if (dummy.getLength() != bar.percent())
+                dummy.setLength(bar.percent());
+            if (dummy.getColor() != bar.bossBarColor())
+                dummy.setColor(bar.bossBarColor());
             sendState(bar, player, dummyId);
         }
     }
 
     private void refreshLiveNames() {
         for (Bar bar : bars.values()) {
-            if (!bar.visible || !isRawText(bar.name)) continue;
+            if (!bar.visible || !isRawText(bar.name))
+                continue;
             Map<UUID, Long> perPlayer = shown.get(bar.id);
-            if (perPlayer == null) continue;
+            if (perPlayer == null)
+                continue;
             for (Player player : onlinePlayers(bar)) {
                 Long dummyId = perPlayer.get(player.getUniqueId());
-                if (dummyId == null) continue;
+                if (dummyId == null)
+                    continue;
                 DummyBossBar dummy = player.getDummyBossBar(dummyId);
-                if (dummy == null) continue;
+                if (dummy == null)
+                    continue;
                 String rendered = bar.label(player);
-                if (!dummy.getText().equals(rendered)) dummy.setText(rendered);
+                if (!dummy.getText().equals(rendered))
+                    dummy.setText(rendered);
             }
         }
     }
@@ -397,7 +426,8 @@ public class BossBar extends Command implements Listener {
         List<Player> result = new ArrayList<>();
         for (UUID uuid : bar.players) {
             Player player = plugin.getServer().getOnlinePlayers().get(uuid);
-            if (player != null && player.isOnline()) result.add(player);
+            if (player != null && player.isOnline())
+                result.add(player);
         }
         return result;
     }
@@ -406,7 +436,8 @@ public class BossBar extends Command implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         for (Bar bar : bars.values()) {
-            if (bar.players.contains(player.getUniqueId())) show(bar, player);
+            if (bar.players.contains(player.getUniqueId()))
+                show(bar, player);
         }
     }
 
@@ -418,21 +449,25 @@ public class BossBar extends Command implements Listener {
 
     @EventHandler
     public void onLevelChange(EntityLevelChangeEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
+        if (!(event.getEntity() instanceof Player player))
+            return;
         reshowWhenLoaded(player, 0);
     }
 
     private void reshowWhenLoaded(Player player, int waited) {
         plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
-            if (!player.isOnline()) return;
+            if (!player.isOnline())
+                return;
             if (awaitingDimensionChange(player) && waited < 200) {
                 reshowWhenLoaded(player, waited + 5);
                 return;
             }
             plugin.getServer().getScheduler().scheduleDelayedTask(plugin, () -> {
-                if (!player.isOnline()) return;
+                if (!player.isOnline())
+                    return;
                 for (Bar bar : bars.values()) {
-                    if (!bar.players.contains(player.getUniqueId())) continue;
+                    if (!bar.players.contains(player.getUniqueId()))
+                        continue;
                     hide(bar, player);
                     show(bar, player);
                 }
@@ -458,10 +493,13 @@ public class BossBar extends Command implements Listener {
     }
 
     private void load() {
-        if (!saveFile.exists()) return;
+        if (!saveFile.exists())
+            return;
         try (Reader reader = Files.newBufferedReader(saveFile.toPath(), StandardCharsets.UTF_8)) {
-            List<Bar> loaded = gson.fromJson(reader, new TypeToken<List<Bar>>() {}.getType());
-            if (loaded != null) loaded.forEach(bar -> bars.put(bar.id, bar));
+            List<Bar> loaded = gson.fromJson(reader, new TypeToken<List<Bar>>() {
+            }.getType());
+            if (loaded != null)
+                loaded.forEach(bar -> bars.put(bar.id, bar));
         } catch (IOException | RuntimeException e) {
             plugin.getLogger().error("Failed to load bossbars.json", e);
         }
@@ -506,10 +544,12 @@ public class BossBar extends Command implements Listener {
         }
 
         String render(CommandSender viewer) {
-            if (!isRawText(name)) return name;
+            if (!isRawText(name))
+                return name;
             try {
                 JsonElement parts = JsonParser.parseString(name).getAsJsonObject().get("rawtext");
-                if (parts == null || !parts.isJsonArray()) return renderPart(name, viewer);
+                if (parts == null || !parts.isJsonArray())
+                    return renderPart(name, viewer);
                 StringBuilder builder = new StringBuilder();
                 for (JsonElement part : parts.getAsJsonArray()) {
                     JsonObject single = new JsonObject();
@@ -554,14 +594,18 @@ public class BossBar extends Command implements Listener {
     }
 
     private static String validateRawText(String text) {
-        if (!isRawText(text)) return null;
+        if (!isRawText(text))
+            return null;
         int end = jsonEnd(text);
-        if (end < 0) return "Invalid rawtext JSON: missing closing '}'";
+        if (end < 0)
+            return "Invalid rawtext JSON: missing closing '}'";
         String trailing = text.substring(end).strip();
-        if (!trailing.isEmpty()) return "Invalid rawtext JSON: unexpected text after JSON: '" + trailing + "'";
+        if (!trailing.isEmpty())
+            return "Invalid rawtext JSON: unexpected text after JSON: '" + trailing + "'";
         try {
             RawText rawText = RawText.fromRawText(text);
-            if (rawText == null || rawText.getBase() == null) return "Invalid rawtext JSON";
+            if (rawText == null || rawText.getBase() == null)
+                return "Invalid rawtext JSON";
             return null;
         } catch (RuntimeException e) {
             Matcher column = Pattern.compile("column (\\d+)").matcher(String.valueOf(e.getMessage()));
@@ -575,25 +619,31 @@ public class BossBar extends Command implements Listener {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (inString) {
-                if (c == '\\') i++;
-                else if (c == '"') inString = false;
+                if (c == '\\')
+                    i++;
+                else if (c == '"')
+                    inString = false;
             } else if (c == '"') {
                 inString = true;
             } else if (c == '{' || c == '[') {
                 depth++;
             } else if (c == '}' || c == ']') {
-                if (--depth == 0) return i + 1;
+                if (--depth == 0)
+                    return i + 1;
             }
         }
         return -1;
     }
 
     private static String flatten(RawText.Component component) {
-        if (component == null) return "";
+        if (component == null)
+            return "";
         return switch (component.getType()) {
             case TEXT -> Objects.toString(component.getComponent_text(), "");
-            case RAWTEXT -> component.getComponent_rawtext().stream().map(BossBar::flatten).collect(Collectors.joining());
-            case TRANSLATE, TRANSLATE_WITH -> translate(component.getComponent_translate(), component.getComponent_translate_with());
+            case RAWTEXT ->
+                component.getComponent_rawtext().stream().map(BossBar::flatten).collect(Collectors.joining());
+            case TRANSLATE, TRANSLATE_WITH ->
+                translate(component.getComponent_translate(), component.getComponent_translate_with());
             default -> Objects.toString(component.getComponent_text(), "");
         };
     }
@@ -611,10 +661,13 @@ public class BossBar extends Command implements Listener {
     }
 
     private static String flattenJson(Object value) {
-        if (value instanceof RawText.Component component) return flatten(component);
+        if (value instanceof RawText.Component component)
+            return flatten(component);
         if (value instanceof Map<?, ?> map) {
-            if (map.get("text") != null) return String.valueOf(map.get("text"));
-            if (map.get("translate") != null) return translate(String.valueOf(map.get("translate")), map.get("with"));
+            if (map.get("text") != null)
+                return String.valueOf(map.get("text"));
+            if (map.get("translate") != null)
+                return translate(String.valueOf(map.get("translate")), map.get("with"));
             if (map.get("rawtext") instanceof Collection<?> rawtext) {
                 StringBuilder builder = new StringBuilder();
                 rawtext.forEach(part -> builder.append(flattenJson(part)));
